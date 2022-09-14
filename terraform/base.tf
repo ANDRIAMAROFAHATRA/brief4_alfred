@@ -11,8 +11,8 @@ resource "azurerm_virtual_network" "network" {
 }
 
 resource "azurerm_ssh_public_key" "ssh_key" {
-  name                = "ssh_key_admin"
+  name                = "ssh_key_adminsan"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  public_key          = file("~/.ssh/id_rsa.pub") 
+  public_key          = file("C:/Users/utilisateur/.ssh/id_rsa.pub") 
 }

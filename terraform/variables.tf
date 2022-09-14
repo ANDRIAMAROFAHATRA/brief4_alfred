@@ -1,13 +1,13 @@
 variable "rg" {
-  default = "S1"
+  default = "sanlab02"
 }
 
 variable "location" {
-  default = "westus"
+  default = "francecentral"
 }
 
 variable "subdomain-prefix" {
-  default = "votingapp"
+  default = "votingappsan"
 }
 
 data "cloudinit_config" "cloud-init" {
