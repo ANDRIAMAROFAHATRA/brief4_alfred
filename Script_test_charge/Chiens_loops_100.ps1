@@ -1,0 +1,1 @@
+﻿For($i=0;$i -lt 100;$i++){Invoke-WebRequest -URI http://votingappsan-sanlab02.francecentral.cloudapp.azure.com/ -Method Post -Body @{vote="Dogs"}}
