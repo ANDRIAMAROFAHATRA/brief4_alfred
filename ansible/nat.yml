@@ -1,0 +1,7 @@
+- name: Create NAT gateway (the module is not available in current release 1.13.0)
+  ansible.builtin.command: |
+    az network nat gateway create -n nat_gw -g "{{rg.state.name}}" -l "{{rg.state.location}}" --public-ip-addresses "{{public_ip_nat.state.name}}"
+
+- name: Assign NAT gateway to subnet
+  ansible.builtin.command: |
+    az network vnet subnet update -g "{{rg.state.name}}" -n "{{subnet_vm.state.name}}" --vnet-name "{{vnet.state.name}}" --nat-gateway nat_gw

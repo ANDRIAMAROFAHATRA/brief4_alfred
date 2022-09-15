@@ -1,0 +1,61 @@
+- name: Création du subnet
+  azure_rm_subnet:
+    resource_group: "{{rg.state.name}}"
+    name: subnet_gateway
+    virtual_network_name: "{{vnet.state.name}}"
+    address_prefix_cidr: 10.0.1.0/24
+  register: subnet_gateway
+
+- name: Création de l'IP publique de la gateway
+  azure_rm_publicipaddress:
+    resource_group: "{{rg.state.name}}"
+    allocation_method: Static
+    name: public_ip_gateway
+    sku: standard
+    domain_name : "{{subdomain_prefix | lower}}-{{rg.state.name | lower}}"
+  register: public_ip_gateway
+
+- name: Creation de la ressource Application Gateway
+  azure_rm_appgateway:
+    resource_group: "{{rg.state.name}}"
+    name: gateway
+    sku:
+      name: standard_v2
+      tier: standard_v2
+      capacity: 2
+    gateway_ip_configurations:
+      - subnet:
+          id: "{{subnet_gateway.state.id}}"
+        name: ipconfig
+    frontend_ip_configurations:
+      - public_ip_address: "{{public_ip_gateway.state.name}}"
+        name: front_conf
+    frontend_ports:
+      - port: 80
+        name: front_port
+    backend_address_pools:
+      - backend_addresses:
+          - ip_address: "{{vm_iface.state.ip_configurations[0].private_ip_address}}"
+        name: back_address_pool
+    backend_http_settings_collection:
+      - port: 80
+        protocol: http
+        cookie_based_affinity: disabled
+        path: '/'
+        request_timeout: 10
+        name: http_settings
+    http_listeners:
+      - frontend_ip_configuration: front_conf
+        frontend_port: front_port
+        protocol: "Http"
+        name: listener
+    request_routing_rules:
+      - rule_type: Basic
+        backend_address_pool: back_address_pool
+        backend_http_settings: http_settings
+        http_listener: listener
+        name: rule1
+  register: gw
+
+- debug:
+    msg: "Application address: http://{{public_ip_gateway.state.dns_settings.fqdn}}"

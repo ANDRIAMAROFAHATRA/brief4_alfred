@@ -1,0 +1,28 @@
+- name: Création du AzureBastionSubnet
+  azure_rm_subnet:
+    resource_group: "{{rg.state.name}}"
+    name: AzureBastionSubnet
+    virtual_network_name: "{{vnet.state.name}}"
+    address_prefix_cidr: 10.0.0.0/24
+  register: subnet_bastion
+
+- name: Création de l'IP publique du Bastion
+  azure_rm_publicipaddress:
+    resource_group: "{{rg.state.name}}"
+    allocation_method: Static
+    name: public_ip_bastion
+    sku: standard
+  register: public_ip_bastion
+
+- name: Create Bastion (the module is not available in the current release 1.13.0)
+  ansible.builtin.command: |
+    az network bastion create -n bastion -g "{{rg.state.name}}" -l "{{rg.state.location}}"  --vnet-name "{{vnet.state.name}}" --sku Standard --public-ip-address "{{public_ip_bastion.state.name}}"
+
+- name: Get bastion id
+  ansible.builtin.command: |
+    az network bastion list -g "{{rg.state.name}}" --query "[0].id"
+  register: bastion_id
+
+- name: Enable tunneling
+  ansible.builtin.command: |
+    az resource update --ids "{{bastion_id.stdout}}" --set properties.enableTunneling=true

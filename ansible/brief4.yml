@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  vars:
+    rg_name: S2
+    subdomain_prefix: voting
+    localisation: westus
+  connection: local
+  tasks:
+  - import_tasks: base.yml
+  - import_tasks: bastion.yml
+  - import_tasks: redis.yml
+  - import_tasks: nat.yml
+  - name: initialisation du fichier cloud-init
+    ansible.builtin.template:
+      src: cloud-init.yml.tmpl
+      dest: cloud-init.yml
+  - import_tasks: vm.yml
+  - import_tasks: gateway.yml

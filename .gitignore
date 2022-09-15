@@ -1,2 +1,4 @@
 *.tfstate*
 .terraform*
+ansible/cloud-init.yml
+ansible/az_ansible

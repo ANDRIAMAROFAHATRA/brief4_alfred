@@ -1,0 +1,29 @@
+- name: Création du ResourceGroup
+  azure_rm_resourcegroup:
+    location: "{{localisation}}"
+    name: "{{rg_name}}"
+  register: rg
+
+- name: Création du vnet
+  azure_rm_virtualnetwork:
+    resource_group: "{{rg.state.name}}"
+    name: "vnet"
+    address_prefixes_cidr: ["10.0.0.0/16"]
+  register: vnet
+
+- name: Création du subnet app
+  azure_rm_subnet:
+    resource_group: "{{rg.state.name}}"
+    name: subnet_vm
+    virtual_network_name: "{{vnet.state.name}}"
+    address_prefix: "10.0.2.0/24"    
+  register: subnet_vm
+
+- name: Création de l'IP publique de la NAT gateway
+  azure_rm_publicipaddress:
+    resource_group: "{{rg.state.name}}"
+    allocation_method: Static
+    name: public_ip_nat
+    sku: standard
+  register: public_ip_nat
+

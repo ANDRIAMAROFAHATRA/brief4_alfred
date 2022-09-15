@@ -1,0 +1,22 @@
+- name: Create an Azure Cache for Redis
+  azure_rm_rediscache:
+    resource_group: "{{rg.state.name}}"
+    name: "{{rg.state.name}}-brief4"
+    sku:
+        name: standard
+        size: C1
+
+- name: Get Azure Cache for Redis with access keys by name
+  azure_rm_rediscache_info:
+    resource_group: "{{rg.state.name}}"
+    name: "{{rg.state.name}}-brief4"
+    return_access_keys: true
+  register: redis
+
+- name: Create a Firewall rule for Azure Cache for Redis
+  azure_rm_rediscachefirewallrule:
+      resource_group: "{{rg.state.name}}"
+      cache_name: "{{rg.state.name}}-brief4"
+      name: rule1
+      start_ip_address: "{{public_ip_nat.state.ip_address}}"
+      end_ip_address:  "{{public_ip_nat.state.ip_address}}"
