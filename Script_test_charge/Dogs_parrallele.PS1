@@ -1,0 +1,1 @@
+1..100 | ForEach-Object -Parallel {Invoke-WebRequest -URI http://votingappsan-sanlab02.francecentral.cloudapp.azure.com/ -Method Post -Body @{vote="Dogs"}; Start-Sleep -Seconds 1 } -ThrottleLimit 10

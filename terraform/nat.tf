@@ -18,7 +18,9 @@ resource "azurerm_nat_gateway_public_ip_association" "gw_ip_a" {
   public_ip_address_id = azurerm_public_ip.public_ip_nat.id
 }
 
+
+# DESACTIVATION DES PARAMETRES DE LA VM PAR RAPPORT AU SCALE SET
 resource "azurerm_subnet_nat_gateway_association" "gw_a" {
-  subnet_id      = azurerm_subnet.subnet_app.id
+  subnet_id      = azurerm_subnet.subnet_vmss.id
   nat_gateway_id = azurerm_nat_gateway.nat_gw.id
 }
