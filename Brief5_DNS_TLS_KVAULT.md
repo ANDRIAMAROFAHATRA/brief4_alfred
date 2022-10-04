@@ -3,7 +3,7 @@
 Ce document est composé de 3 parties : 
 
 1. les différentes étapes pour la génération d'un certificat dans un environnement local Windows subsystem Linux version 2 (WSL2).
-2. Dans le cadre du brief, les étapes d'importation de la clé dans le service AZURE GATEWAY 
+2. Dans le cadre du brief 5, les étapes d'importation de la clé dans le service AZURE GATEWAY via le Portail AZURE 
 3. La création d'un AZURE KEYVAULT et l'importation d'un certificat via les commandes AZURE CLI.
 
 
